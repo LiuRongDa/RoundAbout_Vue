@@ -10,13 +10,18 @@
             unique-opened
             router
         >
+            <!-- 循环items-->
             <template v-for="item in items">
+                <!-- 判断是否有子级标签-->
                 <template v-if="item.subs">
+                    <!-- .index 路径-->
                     <el-submenu :index="item.index" :key="item.index">
                         <template slot="title">
+                            <!-- 小图标-->
                             <i :class="item.icon"></i>
                             <span slot="title">{{ item.title }}</span>
                         </template>
+                        <!--循环子级标签-->
                         <template v-for="subItem in item.subs">
                             <el-submenu
                                 v-if="subItem.subs"
@@ -64,7 +69,7 @@ export default {
                 {
                     icon: 'el-icon-lx-cascades',
                     index: 'table',
-                    title: '基础表格'
+                    title: '基础表格',
                 },
                 {
                     icon: 'el-icon-lx-copy',
@@ -142,6 +147,17 @@ export default {
                         {
                             index: '404',
                             title: '404页面'
+                        }
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-home',
+                    index: '8',
+                    title: '员工管理',
+                    subs: [
+                        {
+                            index: 'staff',
+                            title: '员工管理'
                         }
                     ]
                 },
