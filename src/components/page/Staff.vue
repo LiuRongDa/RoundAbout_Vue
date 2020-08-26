@@ -58,10 +58,10 @@
                 <el-form-item label="电话号" prop="staff_phone">
                     <el-input v-model="staff.staff_phone"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="入职日期" prop="staff_in">
+                 <!--<el-form-item label="入职日期" prop="staff_in">
                      <el-date-picker v-model="staff.staff_in"></el-date-picker>
-                 </el-form-item>-->
-                <!-- <el-form-item label="离职日期" prop="staff_out">
+                 </el-form-item>
+                 <el-form-item label="离职日期" prop="staff_out">
                    <el-date-picker v-model="staff.staff_out"></el-date-picker>
                  </el-form-item>-->
                 <el-form-item label="角色" prop="role_id">
@@ -126,7 +126,7 @@
                 }
             },
             save:function () {
-                this.$set(this.staff,'staff_sex',this.radio_sex)
+                this.$set(this.staff,'staff_sex',this.radio_sex);
                 this.$refs['fm'].validate(valid=>{
                     if(valid){
                         if(this.title=='添加员工'){
@@ -136,7 +136,11 @@
                                 console.info(data);
                             }).catch(err=>{console.info(err)})
                         }else{
-
+                            console.info(this.staff);
+                            this.$axios.post('tbStaff/update',this.$qs.stringify({'tbStaff':JSON.stringify(this.staff)})).then(data=>{
+                                console.info('asdasdasd'+this.staff);
+                                console.info(data);
+                            }).catch(err=>{console.info(err)})
                         }
                     }
                 })
