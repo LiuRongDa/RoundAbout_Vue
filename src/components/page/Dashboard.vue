@@ -10,14 +10,14 @@
                             <div>{{role}}</div>
                         </div>
                     </div>
-                    <div class="user-info-list">
+                    <!--<div class="user-info-list">
                         上次登录时间：
                         <span>2019-11-01</span>
                     </div>
                     <div class="user-info-list">
                         上次登录地点：
                         <span>东莞</span>
-                    </div>
+                    </div>-->
                 </el-card>
                 <el-card shadow="hover" style="height:252px;">
                     <div slot="header" class="clearfix">
@@ -65,8 +65,8 @@
                         </el-card>
                     </el-col>
                 </el-row>
-                <el-card shadow="hover" style="height:403px;">
-                    <div slot="header" class="clearfix">
+                <el-card shadow="hover" style="height:650px;">
+                    <!--<div slot="header" class="clearfix">
                         <span>待办事项</span>
                         <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
                     </div>
@@ -90,11 +90,11 @@
                                 <i class="el-icon-delete"></i>
                             </template>
                         </el-table-column>
-                    </el-table>
+                    </el-table>-->
                 </el-card>
             </el-col>
         </el-row>
-        <el-row :gutter="20">
+        <!--<el-row :gutter="20">
             <el-col :span="12">
                 <el-card shadow="hover">
                     <schart ref="bar" class="schart" canvasId="bar" :options="options"></schart>
@@ -105,7 +105,7 @@
                     <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
                 </el-card>
             </el-col>
-        </el-row>
+        </el-row>-->
     </div>
 </template>
 

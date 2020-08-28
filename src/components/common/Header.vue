@@ -41,6 +41,7 @@
                         <!--<a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
                             <el-dropdown-item>项目仓库</el-dropdown-item>
                         </a>-->
+                        <el-dropdown-item divided @click.native="infos">个人中心</el-dropdown-item>
                         <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -56,7 +57,8 @@ export default {
             collapse: false,
             fullscreen: false,
             name: 'linxin',
-            message: 2
+            message: 2,
+            StaffInfo:{'StaffInfo':JSON.parse(sessionStorage.getItem('StaffInfo'))},
         };
     },
     computed: {
@@ -70,6 +72,7 @@ export default {
         handleCommand(command) {
             if (command == 'loginout') {
                 localStorage.removeItem('ms_username');
+                localStorage.removeItem('pwd');
                 this.$router.push('/login');
             }
         },
@@ -104,6 +107,10 @@ export default {
                 }
             }
             this.fullscreen = !this.fullscreen;
+        },
+        infos:function() {
+            console.info(111);
+            console.info(this.StaffInfo);
         }
     },
     mounted() {

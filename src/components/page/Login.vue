@@ -23,7 +23,6 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-                <!--<p class="login-tips">Tips : 用户名和密码随便填。</p>-->
             </el-form>
         </div>
     </div>
@@ -51,29 +50,24 @@ export default {
     },
     methods: {
         submitForm() {
-            console.info(this.staff.name);
-            console.info(this.staff);
-            console.info(this.staff.pwd);
             this.$refs.login.validate(valid => {
                 if (valid) {
                    /* localStorage.setItem('ms_username', this.param.username);*/
                     this.$axios.post('login-check',this.$qs.stringify({"name":this.staff.name,"pwd":this.staff.pwd}))
                         .then(data=>{
-                            console.info(data.data);
                             if(data.data!='{"code":403,"meaage":登录失败,"data":{}}'){
                                 if(this.value){
                                   //设置cookie
                                   localStorage.setItem('ms_username',this.staff.name);
                                   localStorage.setItem('pwd',this.staff.pwd);
                                   //设置session
-                                  sessionStorage.setItem("staffInfo",JSON.stringify(data));
+                                  sessionStorage.setItem("StaffInfo",JSON.stringify(data.data));
                                 }else{
                                   localStorage.clear();
                                 }
                                 /*this.$router.push({name:'Home',params:{data}});*/
                                 this.$message.success('登录成功');
                                 this.$router.push('/');
-                                /*this.$router.push({path: '/'});*/
                             }else{
                                 this.$message.error("用户名或密码错误！")
                             }
@@ -87,7 +81,7 @@ export default {
                 }
             });
         },
-    },
+    }
 };
 </script>
 

@@ -59,9 +59,10 @@ import bus from '../common/bus';
 export default {
     data() {
         return {
+            StaffInfo:{'StaffInfo':JSON.parse(sessionStorage.getItem('StaffInfo'))},
             collapse: false,
             items: [
-                {
+                /*{
                     icon: 'el-icon-lx-home',
                     index: 'dashboard',
                     title: '系统首页'
@@ -151,7 +152,7 @@ export default {
                     ]
                 },
                 {
-                    icon: 'el-icon-lx-home',
+                    icon: 'el-icon-s-grid',
                     index: '8',
                     title: '员工管理',
                     subs: [
@@ -162,10 +163,15 @@ export default {
                     ]
                 },
                 {
+                    icon: 'el-icon-user-solid',
+                    index: '/personal',
+                    title: '个人中心'
+                },
+                {
                     icon: 'el-icon-lx-redpacket_fill',
                     index: '/donate',
                     title: '支持作者'
-                }
+                }*/
             ]
         };
     },
@@ -180,6 +186,12 @@ export default {
             this.collapse = msg;
             bus.$emit('collapse-content', msg);
         });
+
+        //页面创建之后 传role_id 生成动态导航栏
+        this.$axios.post('tbPower/queryStair',this.$qs.stringify({'role_id':this.StaffInfo.StaffInfo.role_id})).then(data=>{
+            /*  给数组赋值*/
+            this.items=data.data;
+        }).catch(err=>{console.info(err)})
     }
 };
 </script>
