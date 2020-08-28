@@ -105,7 +105,13 @@ export default new Router({
                 {
                     path: '/staff',
                     component: () => import(/* webpackChunkName: "donate" */ '../components/page/Staff.vue'),
-                    meta: { title: '支持作者' }
+                    meta: { title: '员工管理' }
+                },
+                {
+                    path: '/personal',
+                    name:'Personal',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Personal.vue'),
+                    meta: { title: '个人中心' }
                 }
             ]
         },
