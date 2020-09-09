@@ -7,7 +7,7 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/dashboard'
+            redirect: '/user'
         },
         {
             path: '/',
@@ -112,7 +112,62 @@ export default new Router({
                     name:'Personal',
                     component: () => import(/* webpackChunkName: "donate" */ '../components/page/Personal.vue'),
                     meta: { title: '个人中心' }
+                },
+                {
+                    path: '/user',
+                    name:'User',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/User.vue'),
+                    meta: { title: '用户详情' }
+                },
+                {
+                    path: '/topic',
+                    name:'Topic',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Topic.vue'),
+                    meta: { title: '专栏' }
+                },
+                {
+                    path: '/gambit',
+                    name:'Gambit',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Gambit.vue'),
+                    meta: { title: '话题' }
+                },
+                {
+                    path: '/issue',
+                    name:'Issue',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Issue.vue'),
+                    meta: { title: '问题' }
+                },
+                {
+                    path: '/idea',
+                    name:'Idea',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Idea.vue'),
+                    meta: { title: '想法' }
+                },
+                {
+                    path: '/statistics',
+                    name:'Statistics',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Statistics.vue'),
+                    meta: { title: '统计' }
+                },
+                {
+                    path: '/report',
+                    name:'Report',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Report.vue'),
+                    meta: { title: '举报详情' }
+                },
+                {
+                    path: '/article',
+                    name:'Article',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Article.vue'),
+                    meta: { title: '文章' }
+                },
+                {
+                    path: '/operation',
+                    name:'Operation',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Operation.vue'),
+                    meta: { title: '操作记录' }
                 }
+
             ]
         },
         {

@@ -10,14 +10,14 @@
                             <div>{{role}}</div>
                         </div>
                     </div>
-                    <!--<div class="user-info-list">
+                    <div class="user-info-list">
                         上次登录时间：
                         <span>2019-11-01</span>
                     </div>
                     <div class="user-info-list">
                         上次登录地点：
                         <span>东莞</span>
-                    </div>-->
+                    </div>
                 </el-card>
                 <el-card shadow="hover" style="height:252px;">
                     <div slot="header" class="clearfix">
@@ -66,7 +66,7 @@
                     </el-col>
                 </el-row>
                 <el-card shadow="hover" style="height:650px;">
-                    <!--<div slot="header" class="clearfix">
+                    <div slot="header" class="clearfix">
                         <span>待办事项</span>
                         <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
                     </div>
@@ -90,11 +90,11 @@
                                 <i class="el-icon-delete"></i>
                             </template>
                         </el-table-column>
-                    </el-table>-->
+                    </el-table>
                 </el-card>
             </el-col>
         </el-row>
-        <!--<el-row :gutter="20">
+        <el-row :gutter="20">
             <el-col :span="12">
                 <el-card shadow="hover">
                     <schart ref="bar" class="schart" canvasId="bar" :options="options"></schart>
@@ -105,7 +105,7 @@
                     <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
                 </el-card>
             </el-col>
-        </el-row>-->
+        </el-row>
     </div>
 </template>
 
@@ -226,17 +226,17 @@ export default {
             return this.name === 'admin' ? '超级管理员' : '普通用户';
         }
     },
-    // created() {
-    //     this.handleListener();
-    //     this.changeDate();
-    // },
-    // activated() {
-    //     this.handleListener();
-    // },
-    // deactivated() {
-    //     window.removeEventListener('resize', this.renderChart);
-    //     bus.$off('collapse', this.handleBus);
-    // },
+    created() {
+        this.handleListener();
+        this.changeDate();
+    },
+    activated() {
+        this.handleListener();
+    },
+    deactivated() {
+        window.removeEventListener('resize', this.renderChart);
+        bus.$off('collapse', this.handleBus);
+    },
     methods: {
         changeDate() {
             const now = new Date().getTime();
@@ -244,21 +244,21 @@ export default {
                 const date = new Date(now - (6 - index) * 86400000);
                 item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
             });
+        },
+        handleListener() {
+            bus.$on('collapse', this.handleBus);
+            // 调用renderChart方法对图表进行重新渲染
+            window.addEventListener('resize', this.renderChart);
+        },
+        handleBus(msg) {
+            setTimeout(() => {
+                this.renderChart();
+            }, 200);
+        },
+        renderChart() {
+            this.$refs.bar.renderChart();
+            this.$refs.line.renderChart();
         }
-        // handleListener() {
-        //     bus.$on('collapse', this.handleBus);
-        //     // 调用renderChart方法对图表进行重新渲染
-        //     window.addEventListener('resize', this.renderChart);
-        // },
-        // handleBus(msg) {
-        //     setTimeout(() => {
-        //         this.renderChart();
-        //     }, 200);
-        // },
-        // renderChart() {
-        //     this.$refs.bar.renderChart();
-        //     this.$refs.line.renderChart();
-        // }
     }
 };
 </script>

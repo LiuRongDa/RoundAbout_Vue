@@ -18,8 +18,8 @@
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
-                记住密码<el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949">
-            </el-switch>
+                <!--记住密码<el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949">
+            </el-switch>-->
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>

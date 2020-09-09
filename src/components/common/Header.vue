@@ -42,11 +42,29 @@
                             <el-dropdown-item>项目仓库</el-dropdown-item>
                         </a>-->
                         <el-dropdown-item divided @click.native="infos">个人中心</el-dropdown-item>
+                        <el-dropdown-item divided @click.native="upPwd">修改密码</el-dropdown-item>
                         <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
         </div>
+
+
+        <!-- 修改密码-->
+        <el-dialog :visible.sync="dialogFormVisible">
+            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="旧密码" prop="oldPwd">
+                <el-input type="password" v-model="ruleForm.oldPwd" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="新密码" prop="newPwd">
+                <el-input type="password" v-model="ruleForm.newPwd" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                <el-button @click="resetForm('ruleForm')">重置</el-button>
+            </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -59,6 +77,12 @@ export default {
             name: 'linxin',
             message: 2,
             StaffInfo:{'StaffInfo':JSON.parse(sessionStorage.getItem('StaffInfo'))},
+            ruleForm:{oldPwd:'',newPwd:''},
+            dialogFormVisible: false,
+            rules:{
+                oldPwd:[{required:true,message:'原密码不能为空'}],
+                newPwd:[{required:true,message:'新密码不能为空'}]
+            },
         };
     },
     computed: {
@@ -109,9 +133,49 @@ export default {
             this.fullscreen = !this.fullscreen;
         },
         infos:function() {
-            console.info(111);
-            console.info(this.StaffInfo);
-        }
+            /*this.$router.push({name:'Home',params:{list}})*/
+            //跳转到个人中心
+            this.$router.push({name:'Personal'})
+        },
+        //显示from表单
+        upPwd:function() {
+            this.dialogFormVisible=true;
+        },
+        //提交from 表单
+        submitForm(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    //判断密码是否一致
+                    console.info(this.StaffInfo.StaffInfo.staff_id);
+                    this.$axios.post('tbStaff/oldPwd',this.$qs.stringify({'staff_id':this.StaffInfo.StaffInfo.staff_id})).then(data=>{
+                        if(data.data==true){
+                            if(this.ruleForm.oldPwd!=this.ruleForm.newPwd){
+                                this.$axios.post('tbStaff/upPwd',this.$qs.stringify({'staff_pwd':this.ruleForm.newPwd,'staff_id':this.StaffInfo.StaffInfo.staff_id})).then(data=>{
+                                    if(data.data==true){
+                                        this.dialogFormVisible=false;
+                                        this.$message.success("修改成功!");
+                                        this.ruleForm={oldPwd:'',newPwd:''};
+                                        this.$router.push({path:'login'});
+                                        localStorage.clear();
+                                    }
+                                }).catch(err=>{console.info(err)})
+                            }else{
+                                this.$message.error("新密码不能和旧密码一样！");
+                                return false;
+                            }
+                        }else{
+                            this.$message.error("原密码不正确！");
+                        }
+                    }).catch(err=>{console.info(err)})
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        },
     },
     mounted() {
         if (document.body.clientWidth < 1500) {
