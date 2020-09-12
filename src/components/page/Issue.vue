@@ -11,8 +11,8 @@
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" icon="el-icon-success" class="handle-del mr10" @click="show()">添加</el-button>
-                <el-input v-model="issue.issue_title" placeholder="输入标题搜索" class="handle-input mr10"></el-input>
-                <el-input v-model="issue.issue_content" placeholder="输入内容搜索" class="handle-input mr10"></el-input>
+                <el-input v-model="issue.issue_title" placeholder="输入标题搜索" class="handle-input mr10" clearable></el-input>
+                <el-input v-model="issue.issue_content" placeholder="输入内容搜索" class="handle-input mr10" clearable></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="searchs()">搜索</el-button>
             </div>
             <el-table
@@ -32,23 +32,23 @@
                 <el-table-column label="操作"  width="100px">
                     <!-- scope：返回当前单元格 -->
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="show(scope.row)">编辑</el-button>
+                        <el-button type="primary" icon="el-icon-edit" @click="show(scope.row)">编辑</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <!-- 分页-->
-            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="2" @current-change="selectPageInfo" style="float: right;"></el-pagination>
+            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="20" @current-change="selectPageInfo" style="float: right;"></el-pagination>
         </div>
 
 
         <el-dialog :title="title" :visible.sync="dialogFormVisible" >
             <!--表单提交-->
             <el-form :model="issue" label-width="100px" :rules="rules" ref="fm">
-                <el-form-item label="话题名称" prop="issue_title">
-                    <el-input v-model="issue.issue_title"></el-input>
+                <el-form-item label="问题名称" prop="issue_title">
+                    <el-input v-model="issue.issue_title" clearable  maxlength="15"></el-input>
                 </el-form-item>
-                <el-form-item label="话题描述" prop="issue_content">
-                    <el-input v-model="issue.issue_content"></el-input>
+                <el-form-item label="问题描述" prop="issue_content">
+                    <el-input v-model="issue.issue_content" type="textarea" autosize maxlength="200"></el-input>
                 </el-form-item>
                 <el-form-item label="用户" prop="user_id">
                     <el-select v-model="issue.user_id">
@@ -58,7 +58,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="dialogFormVisible = false,reload()">取 消</el-button>
                 <el-button type="primary"  @click="save()">确 定</el-button>
             </div>
         </el-dialog>
@@ -66,8 +66,10 @@
 </template>
 
 <script>
+    import {isvalidUsername} from '@/utils/validator'
     export default {
         name: 'Issue',
+        inject:['reload'],
         data:function() {
             return{
                 list:[],
@@ -77,7 +79,8 @@
                 dialogFormVisible: false,
                 title:'',
                 rules:{
-                    topic_name:[{required:true,message:'专栏名不能为空'}]
+                    issue_title:[{required:true,message:'专栏名不能为空'},{validator:isvalidUsername,tigger:'blur'}],
+                    issue_content:[{required:true,message:'专栏名不能为空'},{validator:isvalidUsername,tigger:'blur'}]
                 },
                 multipleSelection: [],
                 delList: [],
@@ -116,13 +119,18 @@
             },
             //添加修改
             save(){
-                this.$axios.post('BackTbIssue/save',this.$qs.stringify({'s':JSON.stringify(this.issue)})).then(data=>{
-                        if(data.data!=null && data.data!=''){
-                            this.pageInfo = data.data;
-                            this.$message.success("成功！")
-                        }
-                        this.dialogFormVisible=false;
-                    }).catch(err=>{console.info(err)})
+                this.$refs['fm'].validate(valid=>{
+                    if(valid){
+                        this.$axios.post('BackTbIssue/save',this.$qs.stringify({'s':JSON.stringify(this.issue)})).then(data=>{
+                            if(data.data!=null && data.data!=''){
+                                this.pageInfo = data.data;
+                                this.$message.success("成功！")
+                            }
+                            this.reload();
+                            this.dialogFormVisible=false;
+                        }).catch(err=>{console.info(err)})
+                    }
+                })
             }
         },
         created:function() {

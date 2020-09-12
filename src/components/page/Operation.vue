@@ -58,7 +58,7 @@
         },
         methods:{
             selectPageInfo(val){
-                this.$axios.post('BackTbOperaion/selePage',this.$qs.stringify({'pageNum':val})).then(data=>{
+                this.$axios.post('BackTbOperaion/selePage',this.$qs.stringify({'pageNum':val,'operation_content':this.operation.report_content,'operation_time':this.operation.report_data})).then(data=>{
                         this.pageInfo=data.data;
                     }).catch(err=>{console.info(err)})
             },

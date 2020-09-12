@@ -10,7 +10,7 @@
         <div class="container">
             <div class="handle-box">
                 <!--<el-button type="primary" icon="el-icon-success" class="handle-del mr10" @click="show()">添加</el-button>-->
-                <el-input v-model="user.user_names" placeholder="输入姓名搜索" class="handle-input mr10"></el-input>
+                <el-input v-model="user.user_names" placeholder="输入姓名搜索" class="handle-input mr10" clearable></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="searchs()">搜索</el-button>
             </div>
             <el-table
@@ -26,7 +26,7 @@
                     <template slot-scope="scope">
                         <el-image
                                 class="table-td-thumb"
-                                :src="'http://localhost:8088/springboot/imgs/'+scope.row.user_photo"
+                                :src="'http://localhost:8088/springboot/'+scope.row.user_photo"
                                 :preview-src-list="['http://localhost:8088/springboot/imgs/'+scope.row.user_photo]"
                         ></el-image>
                     </template>
@@ -37,7 +37,7 @@
                         {{scope.row.user_sex ==0?'男':'女'}}
                     </template>
                 </el-table-column>
-                <el-table-column label="身份证号" prop="user_email" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="邮箱" prop="user_email" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="个性签名" prop="user_sign" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="地址" prop="user_residence" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="个人简介" prop="user_brief" :show-overflow-tooltip="true"></el-table-column>
@@ -59,7 +59,7 @@
                 </el-table-column>
             </el-table>
             <!-- 分页-->
-            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="5" @current-change="selectPageInfo" style="float: right;"></el-pagination>
+            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="11" @current-change="selectPageInfo" style="float: right;"></el-pagination>
         </div>
 
 
@@ -67,26 +67,26 @@
             <!--表单提交-->
             <el-form :model="user" label-width="100px" :rules="rules" ref="fm">
                 <el-form-item label="姓名" prop="user_name">
-                    <el-input v-model="user.user_name" maxlength="10"></el-input>
+                    <el-input v-model="user.user_name" maxlength="10" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="电话号" prop="user_phone">
-                <el-input v-model="user.user_phone"></el-input>
+                <el-input v-model="user.user_phone" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="user_pwd">
-                    <el-input v-model="user.user_pwd" show-password></el-input>
+                    <el-input v-model="user.user_pwd" show-password clearable></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱" prop="user_email">
-                    <el-input v-model="user.user_email"></el-input>
+                    <el-input v-model="user.user_email" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="个性签名" prop="user_sign">
-                    <el-input v-model="user.user_sign"></el-input>
+                    <el-input v-model="user.user_sign" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="性别" prop="user_sex">
                     <el-radio v-model="radio_sex" label="1">男</el-radio>
                     <el-radio v-model="radio_sex" label="0">女</el-radio>
                 </el-form-item>
                 <el-form-item label="个人简介" prop="user_brief">
-                    <el-input v-model="user.user_brief"></el-input>
+                    <el-input v-model="user.user_brief" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="职业" prop="user_trade">
                     <el-select v-model="user.user_trade">
@@ -116,11 +116,12 @@
                 user_sex:'',
                 user_state:'',
                 radio_sex:'',
+                rules:{
+
+                },
                 StaffInfo:{'StaffInfo':JSON.parse(sessionStorage.getItem('StaffInfo'))},
                 dialogFormVisible: false,
                 title:'',
-                rules:{
-                },
                 multipleSelection: [],
                 delList: [],
                 editVisible: false,
@@ -150,7 +151,6 @@
             },
             //添加
             save:function() {
-                this.ref=
                 this.$set(this.user,'user_sex',this.radio_sex);
                 this.$axios.post('BackTbUser/add',this.$qs.stringify({'tbUser':JSON.stringify(this.user),'staff_id':this.StaffInfo.StaffInfo.staff_id})).then(data=>{
                     this.dialogFormVisible=false;
@@ -179,7 +179,6 @@
             }
         },
         created:function () {
-            console.info(this.StaffInfo.StaffInfo);
             /*页面加载 分页查询*/
             this.$axios.post('BackTbUser/userAndTradeQueryAll').then(data=>{
                 this.pageInfo=data.data;

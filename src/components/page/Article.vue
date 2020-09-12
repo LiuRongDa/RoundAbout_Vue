@@ -10,8 +10,8 @@
 
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="article.article_title" placeholder="输入标题搜索" class="handle-input mr10"></el-input>
-                <el-input v-model="article.article_content" placeholder="输入标题搜索" class="handle-input mr10"></el-input>
+                <el-input v-model="article.article_title" placeholder="输入标题搜索" class="handle-input mr10" clearable></el-input>
+                <el-input v-model="article.article_content" placeholder="输入内容搜索" class="handle-input mr10" clearable></el-input>
                 <el-date-picker v-model="article.article_date" placeholder="输入时间搜索" class="handle-input mr10"  value-format=" yyyy-MM-dd" format="yyyy-MM-dd"></el-date-picker>
                 <el-button type="primary" icon="el-icon-search" @click="searchs()">搜索</el-button>
             </div>
@@ -25,15 +25,6 @@
                 <el-table-column label="编号" prop="article_id"></el-table-column>
                 <el-table-column label="标题" prop="article_title" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="内容" prop="article_content" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="头像" align="center">
-                    <template slot-scope="scope">
-                        <el-image
-                                class="table-td-thumb"
-                                :src="'http://localhost:8088/springboot/imgs/'+scope.row.article_photo"
-                                :preview-src-list="['http://localhost:8088/springboot/imgs/'+scope.row.article_photo]"
-                        ></el-image>
-                    </template>
-                </el-table-column>
                 <el-table-column label="状态" prop="article_state" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         {{scope.row.article_state ==0?'正常':'封禁'}}
@@ -47,19 +38,21 @@
                     <!-- scope：返回当前单元格 -->
                     <template slot-scope="scope">
                         <el-button icon="el-icon-search" circle @click="showMore(scope.row.article_id)"></el-button>
-                        <el-button type="danger" icon="el-icon-delete" circle @click="del(scope.row.article_id)"></el-button>
+                        <!--<el-button type="danger" icon="el-icon-delete" circle @click="del(scope.row.article_id)"></el-button>-->
                     </template>
                 </el-table-column>
             </el-table>
             <!-- 分页-->
-            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="5" @current-change="selectPageInfo" style="float: right;"></el-pagination>
+            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="11" @current-change="selectPageInfo" style="float: right;"></el-pagination>
         </div>
 
         <el-dialog :title="title" :visible.sync="dialogFormVisible" >
-            <h3>问题标题</h3>
-            {{details.article_title}}
-            <h3>问题内容</h3>
-            {{details.article_content}}<br><br>
+            <div v-if="details.article_title!='' && details.article_title!=null">
+                <center><h3>文章标题</h3></center><br>
+                <center>{{details.article_title}}</center><br><br>
+            </div>
+            <center><h3>文章内容</h3></center><br>
+            <div v-html="details.article_content"></div><br>
             <span style="float: right"><h3>作者：{{users.user_name}}</h3></span>
         </el-dialog>
     </div>
@@ -77,9 +70,6 @@
                 users:{},
                 dialogFormVisible: false,
                 title:'',
-                rules:{
-                    /*topic_name:[{required:true,message:'专栏名不能为空'}]*/
-                },
                 multipleSelection: [],
                 delList: [],
                 editVisible: false,
@@ -91,7 +81,7 @@
         },
         methods:{
             selectPageInfo(val){
-                this.$axios.post('BackTbArticle/selePage',this.$qs.stringify({'pageNum':val})).then(data=>{
+                this.$axios.post('BackTbArticle/selePage',this.$qs.stringify({'pageNum':val,'article_title':this.article.article_title,'article_content':this.article.article_content,'article_date':this.article.article_date})).then(data=>{
                         this.pageInfo=data.data;
                     }).catch(err=>{console.info(err)})
             },
@@ -111,12 +101,12 @@
                             }).catch(err=>{console.info(err)})
                     }).catch(err=>{console.info(err)})
             },
-            del(article_id){
+            /*del(article_id){
                 this.$axios.post('BackTbArticle/del',this.$qs.stringify({'article_id':article_id})).then(data=>{
                         this.pageInfo=data.data;
                         this.$message.success("删除成功！")
                     }).catch(err=>{console.info(err)})
-            }
+            }*/
         },
         created:function() {
             this.$axios.post('BackTbArticle/selePage').then(data=>{

@@ -10,7 +10,7 @@
 
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="report.report_content" placeholder="输入问题内容搜索" class="handle-input mr10"></el-input>
+                <el-input v-model="report.report_content" placeholder="输入问题内容搜索" class="handle-input mr10" clearable></el-input>
                 <el-date-picker v-model="report.report_data" placeholder="输入时间搜索" class="handle-input mr10"  value-format=" yyyy-MM-dd" format="yyyy-MM-dd"></el-date-picker>
                 <el-button type="primary" icon="el-icon-search" @click="searchs()">搜索</el-button>
             </div>
@@ -22,14 +22,14 @@
                     header-cell-class-name="table-header"
             >
                 <el-table-column label="编号" prop="report_id"></el-table-column>
-                <el-table-column label="内容" prop="report_content" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="举报原因" prop="report_content" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="举报人" prop="tbUser.user_name" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="问题标题" prop="tbIssue.issue_title" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="问题描述" prop="tbIssue.issue_content" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="文章标题" prop="tbArticle.article_title" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="文章内容" prop="tbArticle.article_content" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="评论" prop="tbComment.comment_content" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="回复" prop="tbReply.reply_content" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="被举报问题标题" prop="tbIssue.issue_title" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="被举报问题描述" prop="tbIssue.issue_content" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="被举报文章标题" prop="tbArticle.article_title" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="被举报文章内容" prop="tbArticle.article_content" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="被举报评论" prop="tbComment.comment_content" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="被举报回复" prop="tbReply.reply_content" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="举报时间" prop="report_data" :show-overflow-tooltip="true" width="110px"></el-table-column>
                 <el-table-column label="操作" width="100px">
                     <!-- scope：返回当前单元格 -->
@@ -40,7 +40,7 @@
                 </el-table-column>
             </el-table>
             <!-- 分页-->
-            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="10" @current-change="selectPageInfo" style="float: right;"></el-pagination>
+            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="11" @current-change="selectPageInfo" style="float: right;"></el-pagination>
         </div>
 
 
@@ -95,9 +95,6 @@
                 dialogFormVisible: false,
                 title:'',
                 beReportPeople:'',
-                rules:{
-                    topic_name:[{required:true,message:'专栏名不能为空'}]
-                },
                 multipleSelection: [],
                 delList: [],
                 editVisible: false,

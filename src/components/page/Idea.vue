@@ -11,7 +11,7 @@
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" icon="el-icon-success" class="handle-del mr10" @click="show()">添加</el-button>
-                <el-input v-model="idea.idea_content" placeholder="输入内容搜索" class="handle-input mr10"></el-input>
+                <el-input v-model="idea.idea_content" placeholder="输入内容搜索" class="handle-input mr10" clearable></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="searchs()">搜索</el-button>
             </div>
             <el-table
@@ -41,8 +41,8 @@
         <el-dialog :title="title" :visible.sync="dialogFormVisible" >
             <!--表单提交-->
             <el-form :model="idea" label-width="100px" :rules="rules" ref="fm">
-                <el-form-item label="话题描述" prop="idea_content">
-                    <el-input v-model="idea.idea_content"></el-input>
+                <el-form-item label="想法" prop="idea_content">
+                    <el-input v-model="idea.idea_content" type="textarea" autosize maxlength="200"></el-input>
                 </el-form-item>
                 <el-form-item label="用户" prop="user_id">
                     <el-select v-model="idea.user_id">
@@ -52,7 +52,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="dialogFormVisible = false,reload()">取 消</el-button>
                 <el-button type="primary"  @click="save()">确 定</el-button>
             </div>
         </el-dialog>
@@ -60,8 +60,10 @@
 </template>
 
 <script>
+    import {isvalidUsername} from '@/utils/validator'
     export default {
         name: 'Idea',
+        inject:['reload'],
         data:function() {
             return{
                 list:[],
@@ -71,7 +73,7 @@
                 dialogFormVisible: false,
                 title:'',
                 rules:{
-                    topic_name:[{required:true,message:'专栏名不能为空'}]
+                    idea_content:[{required:true,message:'想法不能为空'},{validator:isvalidUsername,tigger:'blur'}]
                 },
                 multipleSelection: [],
                 delList: [],
@@ -109,13 +111,18 @@
             },
             //添加修改
             save(){
-                this.$axios.post('BackTbIdea/save',this.$qs.stringify({'s':JSON.stringify(this.idea)})).then(data=>{
-                    if(data.data!=null && data.data!=''){
-                        this.pageInfo = data.data;
-                        this.$message.success("成功！")
+                this.$refs['fm'].validate(valid=>{
+                    if(valid){
+                        this.$axios.post('BackTbIdea/save',this.$qs.stringify({'s':JSON.stringify(this.idea)})).then(data=>{
+                            if(data.data!=null && data.data!=''){
+                                this.pageInfo = data.data;
+                                this.$message.success("成功！")
+                            }
+                            this.reload();
+                            this.dialogFormVisible=false;
+                        }).catch(err=>{console.info(err)})
                     }
-                    this.dialogFormVisible=false;
-                }).catch(err=>{console.info(err)})
+                })
             },
             //删除
             del(idea_id){

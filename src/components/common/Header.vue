@@ -15,7 +15,7 @@
                     </el-tooltip>
                 </div>
                 <!-- 消息中心 -->
-                <div class="btn-bell">
+                <!--<div class="btn-bell">
                     <el-tooltip
                         effect="dark"
                         :content="message?`有${message}条未读消息`:`消息中心`"
@@ -26,7 +26,7 @@
                         </router-link>
                     </el-tooltip>
                     <span class="btn-bell-badge" v-if="message"></span>
-                </div>
+                </div>-->
                 <!-- 用户头像 -->
                 <div class="user-avator">
                     <img src="../../assets/img/img.jpg" />
@@ -54,10 +54,10 @@
         <el-dialog :visible.sync="dialogFormVisible">
             <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="旧密码" prop="oldPwd">
-                <el-input type="password" v-model="ruleForm.oldPwd" autocomplete="off"></el-input>
+                <el-input type="password" v-model="ruleForm.oldPwd" autocomplete="off" maxlength="15"></el-input>
             </el-form-item>
             <el-form-item label="新密码" prop="newPwd">
-                <el-input type="password" v-model="ruleForm.newPwd" autocomplete="off"></el-input>
+                <el-input type="password" v-model="ruleForm.newPwd" autocomplete="off" maxlength="15"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -69,6 +69,7 @@
 </template>
 <script>
 import bus from '../common/bus';
+import {isvalidUsername} from '@/utils/validator';
 export default {
     data() {
         return {
@@ -80,8 +81,8 @@ export default {
             ruleForm:{oldPwd:'',newPwd:''},
             dialogFormVisible: false,
             rules:{
-                oldPwd:[{required:true,message:'原密码不能为空'}],
-                newPwd:[{required:true,message:'新密码不能为空'}]
+                oldPwd:[{required:true,message:'原密码不能为空'},{validator:isvalidUsername,tigger:'blur'}],
+                newPwd:[{required:true,message:'新密码不能为空'},{validator:isvalidUsername,tigger:'blur'}]
             },
         };
     },
@@ -146,8 +147,8 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     //判断密码是否一致
-                    console.info(this.StaffInfo.StaffInfo.staff_id);
-                    this.$axios.post('tbStaff/oldPwd',this.$qs.stringify({'staff_id':this.StaffInfo.StaffInfo.staff_id})).then(data=>{
+                    console.info(this.ruleForm.oldPwd)
+                    this.$axios.post('tbStaff/oldPwd',this.$qs.stringify({'staff_pwd':this.StaffInfo.StaffInfo.staff_pwd,'oldPwd':this.ruleForm.oldPwd})).then(data=>{
                         if(data.data==true){
                             if(this.ruleForm.oldPwd!=this.ruleForm.newPwd){
                                 this.$axios.post('tbStaff/upPwd',this.$qs.stringify({'staff_pwd':this.ruleForm.newPwd,'staff_id':this.StaffInfo.StaffInfo.staff_id})).then(data=>{

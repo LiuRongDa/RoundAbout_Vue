@@ -10,7 +10,7 @@
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" icon="el-icon-success" class="handle-del mr10" @click="show()">添加</el-button>
-                <el-input v-model="staff.staff_name" placeholder="输入姓名搜索" class="handle-input mr10"></el-input>
+                <el-input v-model="staff.staff_name" placeholder="输入姓名搜索" class="handle-input mr10" clearable></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="searchs()">搜索</el-button>
             </div>
         <el-table
@@ -48,7 +48,7 @@
             </el-table-column>
         </el-table>
             <!-- 分页-->
-            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="5" @current-change="selectPageInfo" style="float: right;"></el-pagination>
+            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="11" @current-change="selectPageInfo" style="float: right;"></el-pagination>
         </div>
 
 
@@ -82,7 +82,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="dialogFormVisible = false,reload()">取 消</el-button>
                 <el-button type="primary"  @click="save()">确 定</el-button>
             </div>
         </el-dialog>
@@ -92,6 +92,7 @@
     import {isvalidUsername,validateIdcard,validatePhoneTwo} from '@/utils/validator'
     export default {
         name: 'Staff',
+        inject:['reload'],
         data:function () {
             return{
                 list:[],
@@ -138,13 +139,14 @@
                         if(this.title=='添加员工'){
                             this.$axios.post('tbStaff/add',this.$qs.stringify({'tbStaff':JSON.stringify(this.staff)})).then(data=>{
                                 this.pageInfo=data.data;
+                                this.reload();
                             }).catch(err=>{console.info(err)});
                             this.dialogFormVisible=false;
                         }else{
                             /*修改员工信息*/
-                            console.info(this.staff);
                             this.$axios.post('tbStaff/update',this.$qs.stringify({'staff_name':this.staff.staff_name,'staff_number':this.staff.staff_number,'staff_pwd':this.staff.staff_pwd,'staff_sex':this.radio_sex,'staff_idcard':this.staff.staff_idcard,'staff_phone':this.staff.staff_phone,'role_id':this.staff.role_id,'staff_id':this.staff.staff_id})).then(data=>{
                                 this.pageInfo=data.data;
+                                this.reload();
                             }).catch(err=>{console.info(err)});
                                 this.dialogFormVisible=false
                         }

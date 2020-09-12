@@ -10,7 +10,7 @@
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" icon="el-icon-success" class="handle-del mr10" @click="show()">添加</el-button>
-                <el-input v-model="topic.topic_name" placeholder="输入姓名搜索" class="handle-input mr10"></el-input>
+                <el-input v-model="topic.topic_name" placeholder="输入姓名搜索" class="handle-input mr10" clearable></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="searchs()">搜索</el-button>
             </div>
             <el-table
@@ -36,14 +36,15 @@
                 </el-table-column>
             </el-table>
             <!-- 分页-->
-            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="2" @current-change="selectPageInfo" style="float: right;"></el-pagination>
+            <el-pagination layout="prev, pager, next":total="pageInfo.total" :page-size="11" @current-change="selectPageInfo" style="float: right;"></el-pagination>
         </div>
 
         <el-dialog :title="title" :visible.sync="dialogFormVisible" >
             <div v-for="item1 of titCont">
                 <span v-for="item2 in item1.tbArticle">
                     <h2>{{item2.article_title}}</h2><br>
-                    {{item2.article_content}}
+                    <!--{{item2.article_content}}-->
+                   <div v-html="item2.article_content"></div>
                 </span>
             </div>
         </el-dialog>
@@ -52,7 +53,7 @@
             <!--表单提交-->
             <el-form :model="topic" label-width="100px" :rules="rules" ref="fm">
                 <el-form-item label="专栏名称" prop="topic_name">
-                    <el-input v-model="topic.topic_name"></el-input>
+                    <el-input v-model="topic.topic_name" clearable  maxlength="15"></el-input>
                 </el-form-item>
                 <el-form-item label="用户" prop="user_id">
                     <el-select v-model="topic.user_id">
@@ -62,7 +63,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible1 = false">取 消</el-button>
+                <el-button @click="dialogFormVisible1 = false,reload()">取 消</el-button>
                 <el-button type="primary"  @click="save()">确 定</el-button>
             </div>
         </el-dialog>
@@ -70,8 +71,10 @@
 </template>
 
 <script>
+    import {isvalidUsername} from '@/utils/validator'
     export default {
         name: 'Topic',
+        inject:['reload'],
         data:function() {
             return{
                 list:[],
@@ -83,7 +86,7 @@
                 titCont:[],
                 user:{},
                 rules:{
-                    topic_name:[{required:true,message:'专栏名不能为空'}]
+                    topic_name:[{required:true,message:'专栏名不能为空'},{validator:isvalidUsername,tigger:'blur'}]
                 },
                 multipleSelection: [],
                 delList: [],
@@ -123,23 +126,27 @@
             },
             //添加、修改
             save(){
-                if(this.title=="添加专栏"){
-                    this.$axios.post('BackTbTopic/add',this.$qs.stringify({'s':JSON.stringify(this.topic)})).then(data=>{
-                        if(data.data!=null){
-                            this.pageInfo = data.data;
-                            this.$message.success("添加成功！")
+                this.$refs['fm'].validate(valid=>{
+                    if(valid){
+                        if(this.title=="添加专栏"){
+                            this.$axios.post('BackTbTopic/add',this.$qs.stringify({'s':JSON.stringify(this.topic)})).then(data=>{
+                                if(data.data!=null){
+                                    this.pageInfo = data.data;
+                                    this.$message.success("添加成功！")
+                                }
+                                this.dialogFormVisible1=false;
+                            }).catch(err=>{console.info(err)})
+                        }else{
+                            this.$axios.post('BackTbTopic/update',this.$qs.stringify({'s':JSON.stringify(this.topic)})).then(data=>{
+                                if(data.data!=null){
+                                    this.pageInfo = data.data;
+                                    this.$message.success("修改成功！")
+                                }
+                                this.dialogFormVisible1=false;
+                            }).catch(err=>{console.info(err)})
                         }
-                        this.dialogFormVisible1=false;
-                    }).catch(err=>{console.info(err)})
-                }else{
-                    this.$axios.post('BackTbTopic/update',this.$qs.stringify({'s':JSON.stringify(this.topic)})).then(data=>{
-                        if(data.data!=null){
-                            this.pageInfo = data.data;
-                            this.$message.success("修改成功！")
-                        }
-                        this.dialogFormVisible1=false;
-                    }).catch(err=>{console.info(err)})
-                }
+                    }
+                })
             },
             //分页查询
             selectPageInfo(val){
